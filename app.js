@@ -2,13 +2,30 @@ require.paths.unshift(__dirname + '/modules', __dirname + '/lib/node', __dirname
 
 var simpledb = require('simpledb'),
     fs = require('fs'),
-    lr = require('linereader');
+    lr = require('linereader'),
+    argv = require('node-optimist').argv;
 
-var sdb = new simpledb.SimpleDB({keyid:'AWS_KEY',secret:'AWS_SECRET'});
-var domain = process.argv[2];
-var output = process.argv[3];
+if (!argv.config) {
+    console.log("Must provide --config argument which points to json settings file, such as --config settings.json");
+    process.exit(1);
+}
 
-if (process.argv[4] == "restore") {
+var options = {};
+try {
+    var config = JSON.parse(fs.readFileSync(argv.config, 'utf8'));
+    for (var key in config) {
+        options[key] = config[key];
+    }
+} catch(e) {
+   console.warn('Invalid JSON config file: ' + options.config);
+   throw e;
+}
+
+var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
+var domain = options.domain;
+var output = options.output;
+
+if (options.restore) {
     try {
         reader = new lr.linereader(output, 1024);
         while (reader.hasNextLine()) {
