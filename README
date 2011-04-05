@@ -2,9 +2,11 @@ SimpleDB backup script with node.js
 
 Usage: 
 
-    backup: node app.js <domain> <output-file>
-    restore: node app.js <domain> <input-file> restore
+    First, fill in settings.json with your personal settings.
+
+    backup: node app.js --config settings.json
+    restore: node app.js --config settings.json restore
 
 Assumptions:
 
-    "domain" is empty, when you run using "restore" option.
+    When you run with "restore" flag, domain should exist and be empty.
