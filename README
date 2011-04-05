@@ -1,0 +1,10 @@
+SimpleDB backup script with node.js
+
+Usage: 
+
+    backup: node app.js <domain> <output-file>
+    restore: node app.js <domain> <input-file> restore
+
+Assumptions:
+
+    "domain" is empty, when you run using "restore" option.
