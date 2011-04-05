@@ -23,6 +23,7 @@ try {
 
 // Grab certain arguments from CLI if not in settings.json
 options['backupTo'] = options['backupTo'] || argv.backupTo;
+options['restore'] = options['restore'] || argv.restore;
 
 // Connect to SimpleDB.
 var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
