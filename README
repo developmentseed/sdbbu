@@ -9,4 +9,4 @@ Usage:
 
 Assumptions:
 
-    When you run with "restore" flag, domain should exist and be empty.
+    When you run with "restore" flag, the domain you set to restore to in the settings.json should *not* yet exist.  It will be created for you.

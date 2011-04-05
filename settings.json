@@ -1,6 +1,9 @@
 {
     "awsKey": "AWS_KEY",
     "awsSecret": "AWS_SECRET",
-    "domain": "TARGET_SIMPLEDB_DOMAIN",
-    "output": "/home/ubuntu/backup"
+    "backupFromDomain": "DOMAIN_TO_BACK_UP",
+    "restoreToDomain": "NEW_DOMAIN_TO_RESTORE_TO",
+    "restore": "true",
+    "backupTo": "/home/ubuntu/output",
+    "restoreFrom": "/home/ubuntu/output.txt"
 }

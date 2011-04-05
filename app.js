@@ -21,34 +21,52 @@ try {
    throw e;
 }
 
+// Connect to SimpleDB.
 var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
-var domain = options.domain;
-var output = options.output;
 
+// Restore a database.
 if (options.restore) {
-    try {
-        reader = new lr.linereader(output, 1024);
-        while (reader.hasNextLine()) {
-            var line = reader.nextLine();
-            console.log(JSON.parse(line));
-            // @TODO batch put in groups of X items into domain
-            // or just put one by one for now.
+    // Check if domain exists.  If not, create it.  If exists, exit.
+    sdb.domainMetadata(options.restoreToDomain, function(err, res, meta) {
+        // For now, only support restoring to new domain.
+        if (err && err.Code == "NoSuchDomain") {
+            // Create the domain.  Then restore.
+            sdb.createDomain(options.restoreToDomain, function(err, res, meta) {
+                if (!err) {
+                    try {
+                        reader = new lr.linereader(options.restoreFrom, 1024);
+                        while (reader.hasNextLine()) {
+                            var item = JSON.parse(reader.nextLine());
+                            var itemName = item.$ItemName;
+                            delete item.$ItemName;
+                            sdb.putItem(options.restoreToDomain, itemName, item, function(err, res, meta) {
+                                // TODO: logging.
+                            });
+                        }
+                    } catch (err) {
+                        console.log("Error reading file.  Error was: " + err);
+                    } 
+                }
+            });
         }
-    } catch (err) {
-        console.log("Error reading file.  Error was: " + err);
-    }
+        else {
+            console.log("Domain exists.  Please specify a domain to restore to which does not yet exist");
+            process.exit(1);
+        }
+    });
 }
 
+// Backup a database.
 else {
-    var file = fs.openSync(output + "_" + new Date().getTime() + ".txt", 'a');
+    var file = fs.openSync(options.backupTo + "_" + new Date().getTime() + ".txt", 'a');
     // Get item names first, then get each item. "select" has a 1MB result
     // therefore we're less likely to hit that limit by getting each
     // individual item.
-    sdb.select("SELECT $ItemName FROM " + domain, function(err, res, metadata) {
+    sdb.select("SELECT $ItemName FROM " + options.backupFromDomain, function(err, res, metadata) {
         if (res) {
             res.forEach(function(item) {
                 var obj = {};
-                sdb.getItem(domain, item["$ItemName"], function(error, row, rowMeta) {
+                sdb.getItem(options.backupFromDomain, item["$ItemName"], function(error, row, rowMeta) {
                     fs.writeSync(file, JSON.stringify(row) + "\n");
                 });
             });
