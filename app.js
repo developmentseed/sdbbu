@@ -61,14 +61,13 @@ if (options.restore) {
 
 // Backup a database.
 else {
-    var backupFile = options.backupTo + "_" + new Date().getUTCDate() + ".txt";
     try {
-        // Blank out file if it exists.  Idea is we support 30 day rotation of files.
-        if (fs.statSync(backupFile)) {
-            fs.writeFileSync(backupFile, "");
+        // Delete existing backup file.  Otherwise, backups append to existing backups.
+        if (fs.statSync(options.backupTo)) {
+            fs.writeFileSync(options.backupTo, "");
         }
     } catch (err){};
-    var file = fs.openSync(backupFile, 'a');
+    var file = fs.openSync(options.backupTo, 'a');
     // Get item names first, then get each item. "select" has a 1MB result
     // therefore we're less likely to hit that limit by getting each
     // individual item.
