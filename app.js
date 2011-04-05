@@ -21,6 +21,9 @@ try {
    throw e;
 }
 
+// Grab certain arguments from CLI if not in settings.json
+options['backupTo'] = options['backupTo'] || argv.backupTo;
+
 // Connect to SimpleDB.
 var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
 
@@ -58,7 +61,14 @@ if (options.restore) {
 
 // Backup a database.
 else {
-    var file = fs.openSync(options.backupTo + "_" + new Date().getTime() + ".txt", 'a');
+    var backupFile = options.backupTo + "_" + new Date().getUTCDate() + ".txt";
+    try {
+        // Blank out file if it exists.  Idea is we support 30 day rotation of files.
+        if (fs.statSync(backupFile)) {
+            fs.writeFileSync(backupFile, "");
+        }
+    } catch (err){};
+    var file = fs.openSync(backupFile, 'a');
     // Get item names first, then get each item. "select" has a 1MB result
     // therefore we're less likely to hit that limit by getting each
     // individual item.
