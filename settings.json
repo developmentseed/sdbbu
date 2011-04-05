@@ -2,5 +2,5 @@
     "awsKey": "AWS_KEY",
     "awsSecret": "AWS_SECRET",
     "domain": "TARGET_SIMPLEDB_DOMAIN",
-    "output": "/home/ubuntu/backup.txt"
+    "output": "/home/ubuntu/backup"
 }

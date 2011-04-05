@@ -40,7 +40,7 @@ if (options.restore) {
 }
 
 else {
-    var file = fs.openSync(output, 'a');
+    var file = fs.openSync(output + "_" + new Date().getTime() + ".txt", 'a');
     // Get item names first, then get each item. "select" has a 1MB result
     // therefore we're less likely to hit that limit by getting each
     // individual item.
