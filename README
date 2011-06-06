@@ -5,7 +5,7 @@ Usage:
     First, fill in settings.json with your personal settings.
 
     backup: node app.js --config settings.json
-    restore: node app.js --config settings.json restore
+    restore: node app.js --config settings.json --restore
 
 Assumptions:
 
