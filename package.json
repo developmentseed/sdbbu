@@ -1,0 +1,23 @@
+{
+  "author": "Development Seed <info@developmentseed.org> (http://developmentseed.org)",
+  "name": "simpledb-backup",
+  "description": "Backup a SimpleDB database",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/developmentseed/sdbbu.git"
+  },
+  "main": "app.js",
+  "engines": {
+    "node": "0.4.x"
+  },
+  "dependencies": {
+    "optimist": "0.2.x",
+    "sax": "0.1.x",
+    "xml2js": "0.1.x",
+    "aws-lib": "0.0.x",
+    "simpledb": "0.0.x"
+  },
+  "devDependencies": {},
+  "private": true
+}

@@ -3,7 +3,7 @@ require.paths.unshift(__dirname + '/modules', __dirname + '/lib/node', __dirname
 var simpledb = require('simpledb'),
     fs = require('fs'),
     lr = require('linereader'),
-    argv = require('node-optimist').argv;
+    argv = require('optimist').argv;
 
 if (!argv.config) {
     console.log("Must provide --config argument which points to json settings file, such as --config settings.json");
