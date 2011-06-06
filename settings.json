@@ -3,7 +3,6 @@
     "awsSecret": "AWS_SECRET",
     "backupFromDomain": "DOMAIN_TO_BACK_UP",
     "restoreToDomain": "NEW_DOMAIN_TO_RESTORE_TO",
-    "restore": "true",
     "backupTo": "/home/ubuntu/output",
     "restoreFrom": "/home/ubuntu/output.txt"
 }
