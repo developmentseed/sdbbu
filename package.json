@@ -16,7 +16,8 @@
     "sax": "0.1.x",
     "xml2js": "0.1.x",
     "aws-lib": "0.0.x",
-    "simpledb": "0.0.x"
+    "simpledb": "0.0.x",
+    "request": "1.9.x"
   },
   "devDependencies": {},
   "private": true

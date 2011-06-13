@@ -3,7 +3,8 @@ require.paths.unshift(__dirname + '/modules', __dirname + '/lib/node', __dirname
 var simpledb = require('simpledb'),
     fs = require('fs'),
     lr = require('linereader'),
-    argv = require('optimist').argv;
+    argv = require('optimist').argv,
+    request = require('request');
 
 if (!argv.config) {
     console.log("Must provide --config argument which points to json settings file, such as --config settings.json");
@@ -24,9 +25,12 @@ try {
 // Grab certain arguments from CLI if not in settings.json
 options['backupTo'] = options['backupTo'] || argv.backupTo;
 options['restore'] = options['restore'] || argv.restore;
+options['migrate'] = options['migrate'] || argv.migrate;
 
-// Connect to SimpleDB.
-var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
+if (!options.migrate) {
+    // Connect to SimpleDB.
+    var sdb = new simpledb.SimpleDB({keyid:options.awsKey,secret:options.awsSecret});
+}
 
 // Restore a database.
 if (options.restore) {
@@ -43,6 +47,7 @@ if (options.restore) {
                             var item = JSON.parse(reader.nextLine());
                             var itemName = item.$ItemName;
                             delete item.$ItemName;
+                            console.log(itemName);
                             sdb.putItem(options.restoreToDomain, itemName, item, function(err, res, meta) {
                                 // TODO: logging.
                             });
@@ -58,6 +63,39 @@ if (options.restore) {
             process.exit(1);
         }
     });
+}
+
+else if (options.migrate) {
+    try {
+        reader = new lr.linereader(options.restoreFrom, 1024);
+        while (reader.hasNextLine()) {
+            var doc = {};
+            var item = JSON.parse(reader.nextLine());
+            var itemName = item.$ItemName;
+            delete item.$ItemName;
+            for (var i in item) {
+                try {
+                    item[i] = JSON.parse(item[i]);
+                } catch (e) { console.log(item[i]) }
+                finally {
+                    doc[i] = item[i];
+                }
+            }
+
+            request.put({
+              uri: 'http://localhost:5984/' + options.couchdbTarget + '/' + encodeURIComponent(itemName),
+              headers: {'Content-Type': 'application/json'},
+              json: doc
+            }, function (err, res, body) {
+                   // TODO: error reporting.
+               }
+            );
+
+        }
+    } 
+    catch (err) {
+        console.log("Error reading file.  Error was: " + err);
+    } 
 }
 
 // Backup a database.
