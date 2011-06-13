@@ -47,7 +47,6 @@ if (options.restore) {
                             var item = JSON.parse(reader.nextLine());
                             var itemName = item.$ItemName;
                             delete item.$ItemName;
-                            console.log(itemName);
                             sdb.putItem(options.restoreToDomain, itemName, item, function(err, res, meta) {
                                 // TODO: logging.
                             });
