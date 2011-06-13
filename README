@@ -10,3 +10,12 @@ Usage:
 Assumptions:
 
     When you run with "restore" flag, the domain you set to restore to in the settings.json should *not* yet exist.  It will be created for you.
+
+Migrate to **CouchDB**:
+
+If you want to migrate to CouchDB you can take a backup of your SimpleDB, then:
+
+* Fill in "restoreFrom" in settings.json which should point to a backup file created via this script
+* Fill in "couchdbTarget" in settings.json which should point to an existing, but empty, couchdb database
+* Run like `node app.js --config settings.json --migrate`
+* The host/port for CouchDB are hardcoded for now, to localhost:5984
