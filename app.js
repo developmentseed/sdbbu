@@ -6,26 +6,25 @@ var simpledb = require('simpledb'),
     argv = require('optimist').argv,
     request = require('request');
 
-if (!argv.config) {
-    console.log("Must provide --config argument which points to json settings file, such as --config settings.json");
-    process.exit(1);
-}
-
 var options = {};
-try {
-    var config = JSON.parse(fs.readFileSync(argv.config, 'utf8'));
-    for (var key in config) {
-        options[key] = config[key];
+if (argv.config) {
+    try {
+        var config = JSON.parse(fs.readFileSync(argv.config, 'utf8'));
+        for (var key in config) {
+            options[key] = config[key];
+        }
+    } catch(e) {
+        console.warn('Invalid JSON config file: ' + options.config);
+        throw e;
     }
-} catch(e) {
-   console.warn('Invalid JSON config file: ' + options.config);
-   throw e;
 }
 
 // Grab certain arguments from CLI if not in settings.json
 options['backupTo'] = options['backupTo'] || argv.backupTo;
 options['restore'] = options['restore'] || argv.restore;
 options['migrate'] = options['migrate'] || argv.migrate;
+options['restoreFrom'] = options['restoreFrom'] || argv.restoreFrom;
+options['couchdbTarget'] = options['couchdbTarget'] || argv.couchdbTarget;
 
 if (!options.migrate) {
     // Connect to SimpleDB.
@@ -80,7 +79,6 @@ else if (options.migrate) {
                     doc[i] = item[i];
                 }
             }
-
             request.put({
               uri: 'http://localhost:5984/' + options.couchdbTarget + '/' + encodeURIComponent(itemName),
               headers: {'Content-Type': 'application/json'},
